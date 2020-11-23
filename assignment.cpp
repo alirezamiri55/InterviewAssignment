@@ -9,6 +9,8 @@
 #include <iomanip>
 #include <iterator>
 #include <algorithm>
+#include <functional>
+
 //////////////////////////////////////////////////////
 // Interview assignment for Qlik  by  ALIREZA MIRI
 //////////////////////////////////////////////////////
@@ -124,9 +126,8 @@ public:
     ++count;
 
     auto blank = findBlank(table);
-    if (blank.empty()) {
-      return true;
-    }
+    if (blank.empty()) return true;
+
 
     for (char i = '1'; i <= '9'; ++i) {
 
@@ -143,7 +144,7 @@ public:
   }
 
   //////////////////////////////////////////////////////
-  int isUnique(std::vector<std::vector<char> >& table, const std::vector<short int>& index)
+  int numSolutions(std::vector<std::vector<char> >& table, const std::vector<short int>& index)
   {
 
     std::vector<std::vector<char> > temp(table);
@@ -164,14 +165,14 @@ public:
     return num;
   }
 
-  ///////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
   bool checkUnique(std::vector<std::vector<char> > table) {
 
     for (short int i = 0; i < 9; ++i) {
       for (short int j = 0; j < 9; ++j) {
 
         if (table[i][j] == '.') {
-          if (isUnique(table, { i,j }) != 1) {
+          if (numSolutions(table, { i,j }) != 1) {
             return false;
           }
         }
@@ -187,7 +188,7 @@ public:
     count = 0;//counting number of recursion calls
     solve(table);
 
-    if (count < 1427) {
+    if (count < 1800) {
       return Difficulty::VERYEASY;
 
     }
@@ -279,14 +280,17 @@ public:
     return table;
   }
   ///////////////////////////////////////////////////////////////////////
-  std::vector<std::vector<char> > randomSymmetryDelete(std::vector<std::vector<char> > table,
-                                               const Difficulty& diff) {
+  std::vector<std::vector<char> > randomDelete(std::vector<std::vector<char> > table,
+                                               const Difficulty& diff, const bool& symm) {
 
-    std::vector< std::vector<int> > randomij(45, std::vector<int>(2, 0));
+    int symmetry = 9;
+    if(symm) symmetry = 5;
+
+    std::vector< std::vector<int> > randomij(9*symmetry, std::vector<int>(2, 0));
     auto it = randomij.begin();
 
     for (short int i = 0; i < 9; ++i) {
-      for (short int j = 0; j < 5; ++j) {
+      for (short int j = 0; j < symmetry; ++j) {
         *it = { i,j };
         ++it;
       }
@@ -302,19 +306,21 @@ public:
 
     std::vector<std::vector<char> > temp(table);
 
-    std::cout << std::endl <<"\033[31m"<< "[" << std::setw(randomij.size()+1) << "]"
+    std::cout << std::endl << "[" << std::setw(randomij.size()+1) << "]"
               << std::string(randomij.size()+1, '\b');
     std::cout.flush();
 
     for (auto ij : randomij) {
-
       temp = table;
 
       std::cout << "."; std::cout.flush();
 
       table[ij[0]][ij[1]] = '.';
-      table[ij[0]][8-ij[1]] = '.';
-
+      if(symm) {
+        table[8-ij[0]][8-ij[1]] = '.';
+        table[ij[0]][8-ij[1]] = '.';
+        table[8-ij[0]][ij[1]] = '.';
+      }
       if (!checkUnique(table) and difficulty(table) != diff) {
         table = temp;
       }
@@ -325,11 +331,11 @@ public:
     return table;
   }
   /////////////////////////////////////////////////////////////////////
-  std::vector<std::vector<char> > sudokuFactory(const Difficulty& diff) {
+  std::vector<std::vector<char> > sudokuFactory(const Difficulty& diff, const bool& symm) {
     std::vector<std::vector<char> > table;
     do {
       table = randomValidFilled();
-      table = randomSymmetryDelete(table, diff);
+      table = randomDelete(table, diff, symm);
     } while (difficulty(table) != diff);
 
     return table;
@@ -343,11 +349,20 @@ public:
   void generateS(Sudoku sIn, Generator gIn, Reader rIn) {
 
     std::string input;
+    std::string sym;
+    bool isSym;
 
-    std::cout << "\033[1m\033[33m" << "\n Generating Sudoku\n";
+    std::cout << "\033[1m\033[33m" << "\n\t\t Generating Sudoku\n";
     std::cout << "\n Difficulty of the Sudoku : Easy= 1 , Medium= 2, Hard= 3, Samurai= 4  \n";
-    std::cout << "\n Please enter the difficulty number of sudoku: " << "\033[0m";
+    std::cout << "\n Please enter the difficulty number of sudoku: " ;
     getline(std::cin, input);
+
+    std::cout << "\n Do you want sudoku with symmetry =1 or not =2 : "<< "\033[0m";
+    getline(std::cin, sym);
+
+    if(stoi(sym)==1) isSym=true;
+    else if(stoi(sym)==2) isSym=false;
+    else generateS(sIn, gIn, rIn);
 
     std::vector<std::vector<char> > table;
 
@@ -356,25 +371,25 @@ public:
       case 1:
         std::cout <<"\033[34m" << "****************************************\n" ;
         std::cout << "\n Generating easy Sudoku with unique solution\n "<< "\033[0m";
-        table = gIn.sudokuFactory(Difficulty::EASY);
+        table = gIn.sudokuFactory(Difficulty::EASY, isSym);
         break;
 
       case 2:
         std::cout << "\033[34m" << "****************************************\n";
         std::cout << "\n Generating medium Sudoku with unique solution\n "<< "\033[0m";
-        table = gIn.sudokuFactory(Difficulty::MEDIUM);
+        table = gIn.sudokuFactory(Difficulty::MEDIUM, isSym);
         break;
 
       case 3:
         std::cout << "\033[34m" << "****************************************\n";
         std::cout << "\n Generating hard Sudoku with unique solution\n "<< "\033[0m";
-        table = gIn.sudokuFactory(Difficulty::HARD);
+        table = gIn.sudokuFactory(Difficulty::HARD, isSym);
         break;
 
       case 4:
         std::cout << "\033[34m" << "****************************************\n";
         std::cout << "\n Generating samurai Sudoku with unique solution\n "<< "\033[0m";
-        table = gIn.sudokuFactory(Difficulty::SAMURAI);
+        table = gIn.sudokuFactory(Difficulty::SAMURAI, isSym);
         break;
 
       default:
@@ -393,7 +408,7 @@ public:
 
     std::string input;
 
-    std::cout << "\033[1m\033[32m" << "\n Solving Sudoku\n";
+    std::cout << "\033[1m\033[32m" << "\n\t\t Solving Sudoku\n";
     std::cout << "\n Please enter the file name of the sudoku file (for example 'medium.txt') \n"
               <<" File must be in the curent directory: " << "\033[0m";
 
@@ -473,7 +488,7 @@ int main()
 
   input.start(s, g, r);
 
-  std::cout << "\033[32m" << "   Completed Successfully  \n \n" << "\033[0m";
+  std::cout << "\033[32m" << "\t\t Completed Successfully  \n \n" << "\033[0m";
 
   return 0;
 }
