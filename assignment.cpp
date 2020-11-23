@@ -9,7 +9,7 @@
 #include <iomanip>
 #include <iterator>
 #include <algorithm>
-#include <functional>
+#include <array>
 
 //////////////////////////////////////////////////////
 // Interview assignment for Qlik  by  ALIREZA MIRI
@@ -81,7 +81,10 @@ enum  Difficulty { VERYEASY = 0, EASY, MEDIUM, HARD, SAMURAI, EXTREMESAMURAI };
 //////////////////////////////////////////////////////////////////////////
 class Sudoku {
 
-   long int count = 0;
+private:
+
+  long int count = 0;
+  std::array<char,9> nums ={'1','2','3','4','5','6','7','8','9'};
 
 public:
 
@@ -103,9 +106,8 @@ public:
 
     for (auto k = 0; k < 9; k++)
       {
-        if (tableIn[cell[0]][k] == char_in || tableIn[k][cell[1]] == char_in)
+        if (tableIn[cell[0]][k] == char_in or tableIn[k][cell[1]] == char_in)
           return false;
-
       }
 
     auto i = (cell[0] / 3) * 3;
@@ -128,8 +130,7 @@ public:
     auto blank = findBlank(table);
     if (blank.empty()) return true;
 
-
-    for (char i = '1'; i <= '9'; ++i) {
+      for (auto i:nums){
 
       if (validityCheck(table, blank, i)) {
 
