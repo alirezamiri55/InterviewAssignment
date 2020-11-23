@@ -9,7 +9,9 @@
 #include <iomanip>
 #include <iterator>
 #include <algorithm>
-
+//////////////////////////////////////////////////////
+// Interview assignment for Qlik  by  ALIREZA MIRI
+//////////////////////////////////////////////////////
 class Reader {
 
 public:
@@ -277,14 +279,14 @@ public:
     return table;
   }
   ///////////////////////////////////////////////////////////////////////
-  std::vector<std::vector<char> > randomDelete(std::vector<std::vector<char> > table,
+  std::vector<std::vector<char> > randomSymmetryDelete(std::vector<std::vector<char> > table,
                                                const Difficulty& diff) {
 
-    std::vector< std::vector<int> > randomij(81, std::vector<int>(2, 0));
+    std::vector< std::vector<int> > randomij(45, std::vector<int>(2, 0));
     auto it = randomij.begin();
 
     for (short int i = 0; i < 9; ++i) {
-      for (short int j = 0; j < 9; ++j) {
+      for (short int j = 0; j < 5; ++j) {
         *it = { i,j };
         ++it;
       }
@@ -300,8 +302,8 @@ public:
 
     std::vector<std::vector<char> > temp(table);
 
-    std::cout << std::endl <<"\033[31m"<< "[" << std::setw(82) << "]"
-              << std::string(82, '\b');
+    std::cout << std::endl <<"\033[31m"<< "[" << std::setw(randomij.size()+1) << "]"
+              << std::string(randomij.size()+1, '\b');
     std::cout.flush();
 
     for (auto ij : randomij) {
@@ -311,6 +313,7 @@ public:
       std::cout << "."; std::cout.flush();
 
       table[ij[0]][ij[1]] = '.';
+      table[ij[0]][8-ij[1]] = '.';
 
       if (!checkUnique(table) and difficulty(table) != diff) {
         table = temp;
@@ -326,7 +329,7 @@ public:
     std::vector<std::vector<char> > table;
     do {
       table = randomValidFilled();
-      table = randomDelete(table, diff);
+      table = randomSymmetryDelete(table, diff);
     } while (difficulty(table) != diff);
 
     return table;
@@ -433,10 +436,12 @@ public:
   }
   //////////////////////////////////////////////////////////
   void start(const Sudoku& sIn, const Generator& gIn, const Reader& rIn) {
-
+    std::cout<<"\n\t********************************************\n";
+    std::cout<<"\033[33m"<<"\t\tInterview assignment for QLIK \n";
+    std::cout<<"\t\t   Written by ALIREZA MIRI\n";
+    std::cout<<"\033[0m"<<"\t********************************************\n";
     std::string userInput;
-    std::cout << "\033[33m"
-              << "\nDo you want to solve a sudoku = 1 or generate = 2  (1 or 2) :  " << "\033[0m";
+    std::cout <<"\033[33m"<< "\nDo you want to solve a sudoku = 1 or generate = 2  (1 or 2) :  " << "\033[0m";
     getline(std::cin, userInput);
 
     try {
