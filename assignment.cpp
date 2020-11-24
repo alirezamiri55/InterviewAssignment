@@ -210,19 +210,19 @@ public:
 
     switch (rate) {
       case Difficulty::VERYEASY:
-        std::cout << " The difficulty is very easy" << std::endl;
+        std::cout << "\tThe difficulty is very easy" << std::endl;
         break;
       case Difficulty::EASY:
-        std::cout << " The difficulty is  easy" << std::endl;
+        std::cout << "\tThe difficulty is  easy" << std::endl;
         break;
       case Difficulty::MEDIUM:
-        std::cout << " The difficulty is  medium" << std::endl;
+        std::cout << "\tThe difficulty is  medium" << std::endl;
         break;
       case Difficulty::HARD:
-        std::cout << " The difficulty is  hard" << std::endl;
+        std::cout << "\tThe difficulty is  hard" << std::endl;
         break;
       case Difficulty::SAMURAI:
-        std::cout << " The difficulty is  samurai" << std::endl;
+        std::cout << "\tThe difficulty is  samurai" << std::endl;
         break;
     }
   }
@@ -396,6 +396,15 @@ public:
     }
 
     read.print(table);
+
+    if (sIn.checkUnique(table)) {
+      std::cout << "\t it has unique answer\n";
+    }
+    else {
+      std::cout << "\t it has not unique answer\n";
+    }
+    std::cout << "*****************************************\n";
+
     sIn.printDifficulty(sIn.difficulty(table));
     sIn.solve(table);
     std::cout << "*****************************************\n";
@@ -423,10 +432,10 @@ public:
 
       std::cout << "*****************************************\n";
       if (sIn.checkUnique(table)) {
-        std::cout << " it has unique answer\n";
+        std::cout << "\t it has unique answer\n";
       }
       else {
-        std::cout << " it has not unique answer\n";
+        std::cout << "\t it has not unique answer\n";
       }
       std::cout << "*****************************************\n";
 
