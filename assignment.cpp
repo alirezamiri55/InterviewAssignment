@@ -20,9 +20,7 @@ public:
   ////////////////////////////////////////////////////////////////////////
   std::vector<char> splitter(std::string string_in) {
 
-    while (string_in[string_in.length() - 1] == ' ') {
-      string_in.pop_back();
-    }
+    string_in.erase(std::remove(string_in.begin(),string_in.end(),' '), string_in.end());
 
     std::vector<char> split;
 
@@ -46,8 +44,7 @@ public:
             table.emplace_back(splitter(line));
           }
         myfile.close();
-      }
-    else {
+      } else {
       throw std::runtime_error("");
     }
 
@@ -77,7 +74,7 @@ public:
   }
 };
 //////////////////////////////////////////////////////////////////////////
-enum  Difficulty { VERYEASY = 0, EASY, MEDIUM, HARD, SAMURAI, EXTREMESAMURAI };
+enum  Difficulty { VERYEASY = 0, EASY, MEDIUM, HARD, SAMURAI };
 //////////////////////////////////////////////////////////////////////////
 class Sudoku {
 
@@ -100,6 +97,7 @@ public:
 
     return {};
   }
+
   ///////////////////////////////////////////////////////////////
   inline bool validityCheck(const std::vector<std::vector<char> >& tableIn,
                             const std::vector<short int>& cell, const char& char_in) {
@@ -191,25 +189,18 @@ public:
 
     if (count < 1800) {
       return Difficulty::VERYEASY;
-
     }
     else if (count < 2854) {
       return Difficulty::EASY;
-
     }
     else if (count < 21717) {
       return Difficulty::MEDIUM;
-
     }
     else if (count < 63985) {
       return Difficulty::HARD;
-
-    }
-    else if (count < 120000) {
-      return Difficulty::SAMURAI;
     }
     else {
-      return Difficulty::EXTREMESAMURAI;
+      return Difficulty::SAMURAI;
     }
 
   }
@@ -217,24 +208,21 @@ public:
   void printDifficulty(const Difficulty& rate) {
 
     switch (rate) {
-      case Difficulty::VERYEASY:
-        std::cout << " The difficulty is very easy" << std::endl;
-        break;
-      case Difficulty::EASY:
-        std::cout << " The difficulty is  easy" << std::endl;
-        break;
-      case Difficulty::MEDIUM:
-        std::cout << " The difficulty is  medium" << std::endl;
-        break;
-      case Difficulty::HARD:
-        std::cout << " The difficulty is  hard" << std::endl;
-        break;
-      case Difficulty::SAMURAI:
-        std::cout << " The difficulty is  samurai" << std::endl;
-        break;
-      case Difficulty::EXTREMESAMURAI:
-        std::cout << " The difficulty is extreme samurai" << std::endl;
-        break;
+    case Difficulty::VERYEASY:
+      std::cout << " The difficulty is very easy" << std::endl;
+      break;
+    case Difficulty::EASY:
+      std::cout << " The difficulty is  easy" << std::endl;
+      break;
+    case Difficulty::MEDIUM:
+      std::cout << " The difficulty is  medium" << std::endl;
+      break;
+    case Difficulty::HARD:
+      std::cout << " The difficulty is  hard" << std::endl;
+      break;
+    case Difficulty::SAMURAI:
+      std::cout << " The difficulty is  samurai" << std::endl;
+      break;
     }
   }
 };
@@ -447,8 +435,6 @@ public:
     catch (...) {
       solveS(sIn, rIn);
     }
-
-
   }
   //////////////////////////////////////////////////////////
   void start(const Sudoku& sIn, const Generator& gIn, const Reader& rIn) {
