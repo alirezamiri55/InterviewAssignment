@@ -282,7 +282,7 @@ public:
   }
   ///////////////////////////////////////////////////////////////////////
   std::vector<std::vector<char> > randomDelete(std::vector<std::vector<char> > table,
-                                               const Difficulty& diff, const bool& symm) {
+                                               const bool& symm) {
 
     int symmetry = 9;
     if(symm) symmetry = 5;
@@ -322,7 +322,7 @@ public:
         table[ij[0]][8-ij[1]] = '.';
         table[8-ij[0]][ij[1]] = '.';
       }
-      if (!checkUnique(table) and difficulty(table) != diff) {
+      if (!checkUnique(table)) {
         table = temp;
       }
     }
@@ -336,7 +336,7 @@ public:
     std::vector<std::vector<char> > table;
     do {
       table = randomValidFilled();
-      table = randomDelete(table, diff, symm);
+      table = randomDelete(table, symm);
     } while (difficulty(table) != diff);
 
     return table;
