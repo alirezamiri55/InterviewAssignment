@@ -13,7 +13,9 @@
 
 //////////////////////////////////////////////////////
 // Interview assignment for Qlik  by  ALIREZA MIRI
-//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+enum  Difficulty {VERYEASY = 0, EASY, MEDIUM, HARD, SAMURAI};
+//////////////////////////////////////////////////////////////////////////
 class Reader {
 
 public:
@@ -31,7 +33,7 @@ public:
     return split;
   }
   //////////////////////////////////////////////////////////////////////////
-  std::vector<std::vector<char>> readTable(const std::string& file) {
+  std::vector<std::vector<char> > readTable(const std::string& file) {
 
     std::vector<std::vector<char> > table;
     std::string line;
@@ -73,15 +75,14 @@ public:
 
   }
 };
-//////////////////////////////////////////////////////////////////////////
-enum  Difficulty { VERYEASY = 0, EASY, MEDIUM, HARD, SAMURAI };
+
 //////////////////////////////////////////////////////////////////////////
 class Sudoku {
 
 private:
 
   long int count = 0;
-  std::array<char,9> nums ={'1','2','3','4','5','6','7','8','9'};
+  std::array<char,9> nums = {'1','2','3','4','5','6','7','8','9'};
 
 public:
 
@@ -208,21 +209,21 @@ public:
   void printDifficulty(const Difficulty& rate) {
 
     switch (rate) {
-    case Difficulty::VERYEASY:
-      std::cout << " The difficulty is very easy" << std::endl;
-      break;
-    case Difficulty::EASY:
-      std::cout << " The difficulty is  easy" << std::endl;
-      break;
-    case Difficulty::MEDIUM:
-      std::cout << " The difficulty is  medium" << std::endl;
-      break;
-    case Difficulty::HARD:
-      std::cout << " The difficulty is  hard" << std::endl;
-      break;
-    case Difficulty::SAMURAI:
-      std::cout << " The difficulty is  samurai" << std::endl;
-      break;
+      case Difficulty::VERYEASY:
+        std::cout << " The difficulty is very easy" << std::endl;
+        break;
+      case Difficulty::EASY:
+        std::cout << " The difficulty is  easy" << std::endl;
+        break;
+      case Difficulty::MEDIUM:
+        std::cout << " The difficulty is  medium" << std::endl;
+        break;
+      case Difficulty::HARD:
+        std::cout << " The difficulty is  hard" << std::endl;
+        break;
+      case Difficulty::SAMURAI:
+        std::cout << " The difficulty is  samurai" << std::endl;
+        break;
     }
   }
 };
@@ -321,7 +322,9 @@ public:
   }
   /////////////////////////////////////////////////////////////////////
   std::vector<std::vector<char> > sudokuFactory(const Difficulty& diff, const bool& symm) {
+
     std::vector<std::vector<char> > table;
+
     do {
       table = randomValidFilled();
       table = randomDelete(table, symm);
@@ -332,10 +335,17 @@ public:
 
 };
 //////////////////////////////////////////////////////////////////////////
+template <typename ReaderT>
 class UI {
+
+private:
+
+  ReaderT read;
+
 public:
 
-  void generateS(Sudoku sIn, Generator gIn, Reader rIn) {
+
+  void generateS(Sudoku sIn, Generator gIn) {
 
     std::string input;
     std::string sym;
@@ -351,7 +361,7 @@ public:
 
     if(stoi(sym)==1) isSym=true;
     else if(stoi(sym)==2) isSym=false;
-    else generateS(sIn, gIn, rIn);
+    else generateS(sIn, gIn);
 
     std::vector<std::vector<char> > table;
 
@@ -382,18 +392,18 @@ public:
         break;
 
       default:
-        generateS(sIn, gIn, rIn);
+        generateS(sIn, gIn);
     }
 
-    rIn.print(table);
+    read.print(table);
     sIn.printDifficulty(sIn.difficulty(table));
     sIn.solve(table);
     std::cout << "*****************************************\n";
     std::cout << "*The solution of the generated Sudoku is*\n";
-    rIn.print(table);
+    read.print(table);
   }
   //////////////////////////////////////////////////////////
-  void solveS(Sudoku sIn, Reader rIn) {
+  void solveS(Sudoku sIn) {
 
     std::string input;
 
@@ -405,9 +415,9 @@ public:
 
     try {
 
-      std::vector<std::vector<char> > table = rIn.readTable(input);
+      std::vector<std::vector<char> > table = read.readTable(input);
 
-      rIn.print(table);
+      read.print(table);
 
       sIn.printDifficulty(sIn.difficulty(table));
 
@@ -423,7 +433,7 @@ public:
       std::cout << "**********The solution is****************\n";
 
       if (sIn.solve(table)) {
-        rIn.print(table);
+        read.print(table);
       }
       else {
         std::cout << "*****************************************\n";
@@ -433,11 +443,11 @@ public:
 
     }
     catch (...) {
-      solveS(sIn, rIn);
+      solveS(sIn);
     }
   }
   //////////////////////////////////////////////////////////
-  void start(const Sudoku& sIn, const Generator& gIn, const Reader& rIn) {
+  void start(const Sudoku& sIn, const Generator& gIn) {
     std::cout<<"\n\t********************************************\n";
     std::cout<<"\033[33m"<<"\t\tInterview assignment for QLIK \n";
     std::cout<<"\t\t   Written by ALIREZA MIRI\n";
@@ -449,10 +459,10 @@ public:
     try {
 
       if (userInput == std::to_string(1)) {
-        solveS(sIn, rIn);
+        solveS(sIn);
       }
       else if (userInput == std::to_string(2)) {
-        generateS(sIn, gIn, rIn);
+        generateS(sIn, gIn);
       }
       else {
         throw std::runtime_error("");
@@ -460,7 +470,7 @@ public:
 
     }
     catch (...) {
-      start(sIn, gIn, rIn);
+      start(sIn, gIn);
     }
   }
 };
@@ -468,12 +478,11 @@ public:
 int main()
 {
 
-  Reader r;    // part 1
-  Sudoku s;    // part 2
-  Generator g; // part 3
-  UI input;    // part 4
+  Sudoku s;            // part 2
+  Generator g;         // part 3
+  UI<Reader> input;    // part 4
 
-  input.start(s, g, r);
+  input.start(s, g);
 
   std::cout << "\033[32m" << "\t\t Completed Successfully  \n \n" << "\033[0m";
 
