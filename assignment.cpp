@@ -276,10 +276,10 @@ public:
     int symmetry = 9;
     if(symm) symmetry = 5;
 
-    std::vector< std::vector<int> > randomij(9*symmetry, std::vector<int>(2, 0));
+    std::vector< std::vector<int> > randomij(5*symmetry, std::vector<int>(2, 0));
     auto it = randomij.begin();
 
-    for (short int i = 0; i < 9; ++i) {
+    for (short int i = 0; i < symmetry; ++i) {
       for (short int j = 0; j < symmetry; ++j) {
         *it = { i,j };
         ++it;
@@ -303,7 +303,8 @@ public:
     for (auto ij : randomij) {
       temp = table;
 
-      std::cout << "."; std::cout.flush();
+      std::cout << ".";
+      std::cout.flush();
 
       table[ij[0]][ij[1]] = '.';
       if(symm) {
