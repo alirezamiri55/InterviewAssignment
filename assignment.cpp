@@ -101,7 +101,8 @@ public:
 
   ///////////////////////////////////////////////////////////////
   inline bool validityCheck(const std::vector<std::vector<char> >& tableIn,
-                            const std::vector<short int>& cell, const char& char_in) {
+                            const std::vector<short int>& cell,
+                            const char& char_in) {
 
     for (auto k = 0; k < 9; k++)
       {
@@ -144,7 +145,8 @@ public:
   }
 
   //////////////////////////////////////////////////////
-  int numSolutions(std::vector<std::vector<char> >& table, const std::vector<short int>& index)
+  int numSolutions(std::vector<std::vector<char> >& table,
+                   const std::vector<short int>& index)
   {
 
     std::vector<std::vector<char> > temp(table);
@@ -322,7 +324,8 @@ public:
     return table;
   }
   /////////////////////////////////////////////////////////////////////
-  std::vector<std::vector<char> > sudokuFactory(const Difficulty& diff, const bool& symm) {
+  std::vector<std::vector<char> > sudokuFactory(const Difficulty& diff,
+                                                const bool& symm) {
 
     std::vector<std::vector<char> > table;
 
