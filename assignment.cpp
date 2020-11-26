@@ -348,11 +348,10 @@ private:
 
 public:
 
-
   void generateS(Sudoku sIn, Generator gIn) {
 
-    std::string input;
-    std::string sym;
+    std::string input="";
+    std::string sym="";
     bool isSym;
 
     std::cout << "\033[1m\033[33m" << "\n\t\t Generating Sudoku\n";
@@ -363,41 +362,41 @@ public:
     std::cout << "\n Do you want sudoku with symmetry =1 or not =2 : "<< "\033[0m";
     getline(std::cin, sym);
 
-    if(stoi(sym)==1) isSym=true;
-    else if(stoi(sym)==2) isSym=false;
-    else generateS(sIn, gIn);
-
     std::vector<std::vector<char> > table;
 
-    switch (stoi(input)) {
+      if(stoi(sym)==1) isSym=true;
+      else if(stoi(sym)==2) isSym=false;
+      else throw std::runtime_error("Please enter valid number");;
 
-      case 1:
-        std::cout <<"\033[34m" << "****************************************\n" ;
-        std::cout << "\n Generating easy Sudoku with unique solution\n "<< "\033[0m";
-        table = gIn.sudokuFactory(Difficulty::EASY, isSym);
-        break;
+      switch (stoi(input)) {
 
-      case 2:
-        std::cout << "\033[34m" << "****************************************\n";
-        std::cout << "\n Generating medium Sudoku with unique solution\n "<< "\033[0m";
-        table = gIn.sudokuFactory(Difficulty::MEDIUM, isSym);
-        break;
+        case 1:
+          std::cout <<"\033[34m" << "****************************************\n" ;
+          std::cout << "\n Generating easy Sudoku with unique solution\n "<< "\033[0m";
+          table = gIn.sudokuFactory(Difficulty::EASY, isSym);
+          break;
 
-      case 3:
-        std::cout << "\033[34m" << "****************************************\n";
-        std::cout << "\n Generating hard Sudoku with unique solution\n "<< "\033[0m";
-        table = gIn.sudokuFactory(Difficulty::HARD, isSym);
-        break;
+        case 2:
+          std::cout << "\033[34m" << "****************************************\n";
+          std::cout << "\n Generating medium Sudoku with unique solution\n "<< "\033[0m";
+          table = gIn.sudokuFactory(Difficulty::MEDIUM, isSym);
+          break;
 
-      case 4:
-        std::cout << "\033[34m" << "****************************************\n";
-        std::cout << "\n Generating samurai Sudoku with unique solution\n "<< "\033[0m";
-        table = gIn.sudokuFactory(Difficulty::SAMURAI, isSym);
-        break;
+        case 3:
+          std::cout << "\033[34m" << "****************************************\n";
+          std::cout << "\n Generating hard Sudoku with unique solution\n "<< "\033[0m";
+          table = gIn.sudokuFactory(Difficulty::HARD, isSym);
+          break;
 
-      default:
-        generateS(sIn, gIn);
-    }
+        case 4:
+          std::cout << "\033[34m" << "****************************************\n";
+          std::cout << "\n Generating samurai Sudoku with unique solution\n "<< "\033[0m";
+          table = gIn.sudokuFactory(Difficulty::SAMURAI, isSym);
+          break;
+
+        default:
+          throw std::runtime_error("");
+      }
 
     read.print(table);
 
@@ -426,11 +425,17 @@ public:
 
     getline(std::cin, input);
 
+     std::vector<std::vector<char> > table = read.readTable(input);
+
     try {
 
-      std::vector<std::vector<char> > table = read.readTable(input);
+      table = read.readTable(input);
 
       read.print(table);
+    }
+    catch (...) {
+      solveS(sIn);
+    }
 
       sIn.printDifficulty(sIn.difficulty(table));
 
@@ -454,27 +459,25 @@ public:
         std::cout << "*****************************************\n";
       }
 
-    }
-    catch (...) {
-      solveS(sIn);
-    }
   }
   //////////////////////////////////////////////////////////
   void start(const Sudoku& sIn, const Generator& gIn) {
+
+    std::string userInput;
+
     std::cout<<"\n\t********************************************\n";
     std::cout<<"\033[33m"<<"\t\tInterview assignment for QLIK \n";
     std::cout<<"\t\t   Written by ALIREZA MIRI\n";
     std::cout<<"\033[0m"<<"\t********************************************\n";
-    std::string userInput;
     std::cout <<"\033[33m"<< "\nDo you want to solve a sudoku = 1 or generate = 2  (1 or 2) :  " << "\033[0m";
     getline(std::cin, userInput);
 
     try {
 
-      if (userInput == std::to_string(1)) {
+      if (std::stoi(userInput) ==1) {
         solveS(sIn);
       }
-      else if (userInput == std::to_string(2)) {
+      else if (std::stoi(userInput) ==2) {
         generateS(sIn, gIn);
       }
       else {
